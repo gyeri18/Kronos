@@ -23,6 +23,7 @@ Example:
 Notes (personal):
     - Increased LOOKBACK from 400 to 480 to give the model more historical context.
     - Using SAMPLE_COUNT=3 for averaging multiple samples reduces prediction variance.
+    - Reduced PRED_LEN from 120 to 60; 4 months out feels too speculative for daily data.
 """
 
 import os
@@ -44,7 +45,7 @@ MODEL_PRETRAINED = "NeoQuasar/Kronos-base"
 DEVICE = "cpu"  # "cuda:0"
 MAX_CONTEXT = 512
 LOOKBACK = 480   # increased from 400 for more historical context
-PRED_LEN = 120
+PRED_LEN = 60    # reduced from 120; shorter horizon is more reliable for daily predictions
 T = 1.0
 TOP_P = 0.9
 SAMPLE_COUNT = 3  # increased from 1; average multiple samples to reduce variance
@@ -97,12 +98,4 @@ def load_data(symbol: str) -> pd.DataFrame:
     # Fix invalid open values
     open_bad = (df["open"] == 0) | (df["open"].isna())
     if open_bad.any():
-        print(f"⚠️  Fixed {open_bad.sum()} invalid open values.")
-        df.loc[open_bad, "open"] = df["close"].shift(1)
-        df["open"].fillna(df["close"], inplace=True)
-
-    # Fix missing amount
-    if df["amount"].isna().all() or (df["amount"] == 0).all():
-        df["amount"] = df["close"] * df["volume"]
-
-    print(f"✅ Data loaded: {l
+        print(f"⚠️  Fixed {open_bad.su
