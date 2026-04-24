@@ -28,6 +28,8 @@ Notes (personal):
       during market hours and 3 retries wasn't always enough.
     - Increased retry sleep from 1.5s to 2.0s; gives akshare a bit more breathing room
       between attempts, especially when the server seems under load.
+    - Set TOP_P from 0.9 to 0.85; slightly tighter nucleus sampling felt more stable
+      in my tests on volatile small-cap stocks.
 """
 
 import os
@@ -51,7 +53,7 @@ MAX_CONTEXT = 512
 LOOKBACK = 480   # increased from 400 for more historical context
 PRED_LEN = 60    # reduced from 120; shorter horizon is more reliable for daily predictions
 T = 1.0
-TOP_P = 0.9
+TOP_P = 0.85     # tightened from 0.9; more stable outputs on volatile small-caps
 SAMPLE_COUNT = 3  # increased from 1; average multiple samples to reduce variance
 
 def load_data(symbol: str) -> pd.DataFrame:
@@ -85,9 +87,4 @@ def load_data(symbol: str) -> pd.DataFrame:
         "成交额": "amount"
     }, inplace=True)
 
-    df["date"] = pd.to_datetime(df["date"])
-    df = df.sort_values("date").reset_index(drop=True)
-
-    # Convert numeric columns
-    numeric_cols = ["open", "high", "low", "close", "volume", "amount"]
-    for col in nume
+    d
