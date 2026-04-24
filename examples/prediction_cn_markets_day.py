@@ -26,6 +26,8 @@ Notes (personal):
     - Reduced PRED_LEN from 120 to 60; 4 months out feels too speculative for daily data.
     - Bumped max_retries from 3 to 5; akshare occasionally has transient connection issues
       during market hours and 3 retries wasn't always enough.
+    - Increased retry sleep from 1.5s to 2.0s; gives akshare a bit more breathing room
+      between attempts, especially when the server seems under load.
 """
 
 import os
@@ -66,7 +68,7 @@ def load_data(symbol: str) -> pd.DataFrame:
                 break
         except Exception as e:
             print(f"⚠️ Attempt {attempt}/{max_retries} failed: {e}")
-        time.sleep(1.5)
+        time.sleep(2.0)  # increased from 1.5s; more breathing room between retries
 
     # If still empty after retries
     if df is None or df.empty:
@@ -88,11 +90,4 @@ def load_data(symbol: str) -> pd.DataFrame:
 
     # Convert numeric columns
     numeric_cols = ["open", "high", "low", "close", "volume", "amount"]
-    for col in numeric_cols:
-        df[col] = (
-            df[col]
-            .astype(str)
-            .str.replace(",", "", regex=False)
-            .replace({"--": None, "": None})
-        )
-        df[col] = pd.to_numeric(df[col
+    for col in nume
