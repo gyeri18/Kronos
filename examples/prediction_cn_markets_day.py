@@ -24,6 +24,8 @@ Notes (personal):
     - Increased LOOKBACK from 400 to 480 to give the model more historical context.
     - Using SAMPLE_COUNT=3 for averaging multiple samples reduces prediction variance.
     - Reduced PRED_LEN from 120 to 60; 4 months out feels too speculative for daily data.
+    - Bumped max_retries from 3 to 5; akshare occasionally has transient connection issues
+      during market hours and 3 retries wasn't always enough.
 """
 
 import os
@@ -53,7 +55,7 @@ SAMPLE_COUNT = 3  # increased from 1; average multiple samples to reduce varianc
 def load_data(symbol: str) -> pd.DataFrame:
     print(f"📥 Fetching {symbol} daily data from akshare ...")
 
-    max_retries = 3
+    max_retries = 5  # increased from 3; akshare can be flaky during market hours
     df = None
 
     # Retry mechanism
@@ -93,9 +95,4 @@ def load_data(symbol: str) -> pd.DataFrame:
             .str.replace(",", "", regex=False)
             .replace({"--": None, "": None})
         )
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-
-    # Fix invalid open values
-    open_bad = (df["open"] == 0) | (df["open"].isna())
-    if open_bad.any():
-        print(f"⚠️  Fixed {open_bad.su
+        df[col] = pd.to_numeric(df[col
