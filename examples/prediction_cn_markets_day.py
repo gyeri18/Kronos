@@ -30,6 +30,8 @@ Notes (personal):
       between attempts, especially when the server seems under load.
     - Set TOP_P from 0.9 to 0.85; slightly tighter nucleus sampling felt more stable
       in my tests on volatile small-cap stocks.
+    - Added a print statement after successful data fetch to show the date range loaded;
+      helpful for quickly confirming how much history was actually retrieved.
 """
 
 import os
@@ -76,15 +78,8 @@ def load_data(symbol: str) -> pd.DataFrame:
     if df is None or df.empty:
         print(f"❌ Failed to fetch data for {symbol} after {max_retries} attempts. Exiting.")
         sys.exit(1)
-    
-    df.rename(columns={
-        "日期": "date",
-        "开盘": "open",
-        "收盘": "close",
-        "最高": "high",
-        "最低": "low",
-        "成交量": "volume",
-        "成交额": "amount"
-    }, inplace=True)
 
-    d
+    # Print date range of loaded data so I can quickly confirm how much history was retrieved
+    print(f"✅ Loaded {len(df)} rows from {df.iloc[0, 0]} to {df.iloc[-1, 0]}")
+
+    df.
