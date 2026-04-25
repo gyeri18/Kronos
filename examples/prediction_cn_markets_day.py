@@ -34,6 +34,8 @@ Notes (personal):
       helpful for quickly confirming how much history was actually retrieved.
     - Set DEVICE default check: if CUDA is available use it automatically, fall back to cpu.
       Saves me from manually editing this line when switching between machines.
+    - Increased retry sleep from 2.0s to 3.0s; 2s still wasn't enough during busy market
+      open/close windows when akshare seems to throttle requests more aggressively.
 """
 
 import os
@@ -71,16 +73,10 @@ def load_data(symbol: str) -> pd.DataFrame:
     print(f"📥 Fetching {symbol} daily data from akshare ...")
 
     max_retries = 5  # increased from 3; akshare can be flaky during market hours
+    retry_sleep = 3.0  # increased from 2.0s; helps during busy market open/close windows
     df = None
 
     # Retry mechanism
     for attempt in range(1, max_retries + 1):
         try:
-            df = ak.stock_zh_a_hist(symbol=symbol, period="daily", adjust="")
-            if df is not None and not df.empty:
-                break
-        except Exception as e:
-            print(f"⚠️ Attempt {attempt}/{max_retries} failed: {e}")
-        time.sleep(2.0)  # increased from 1.5s; more breathing room between retries
-
-    # If still empty aft
+   
