@@ -32,6 +32,8 @@ Notes (personal):
       in my tests on volatile small-cap stocks.
     - Added a print statement after successful data fetch to show the date range loaded;
       helpful for quickly confirming how much history was actually retrieved.
+    - Set DEVICE default check: if CUDA is available use it automatically, fall back to cpu.
+      Saves me from manually editing this line when switching between machines.
 """
 
 import os
@@ -50,7 +52,14 @@ os.makedirs(save_dir, exist_ok=True)
 # Setting
 TOKENIZER_PRETRAINED = "NeoQuasar/Kronos-Tokenizer-base"
 MODEL_PRETRAINED = "NeoQuasar/Kronos-base"
-DEVICE = "cpu"  # "cuda:0"
+
+# Auto-detect CUDA so I don't have to manually toggle this when switching machines
+try:
+    import torch
+    DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
+except ImportError:
+    DEVICE = "cpu"
+
 MAX_CONTEXT = 512
 LOOKBACK = 480   # increased from 400 for more historical context
 PRED_LEN = 60    # reduced from 120; shorter horizon is more reliable for daily predictions
@@ -74,12 +83,4 @@ def load_data(symbol: str) -> pd.DataFrame:
             print(f"⚠️ Attempt {attempt}/{max_retries} failed: {e}")
         time.sleep(2.0)  # increased from 1.5s; more breathing room between retries
 
-    # If still empty after retries
-    if df is None or df.empty:
-        print(f"❌ Failed to fetch data for {symbol} after {max_retries} attempts. Exiting.")
-        sys.exit(1)
-
-    # Print date range of loaded data so I can quickly confirm how much history was retrieved
-    print(f"✅ Loaded {len(df)} rows from {df.iloc[0, 0]} to {df.iloc[-1, 0]}")
-
-    df.
+    # If still empty aft
