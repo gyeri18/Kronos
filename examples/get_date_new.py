@@ -46,7 +46,7 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
             'fqt': '1',  # 前复权
             'beg': start_date,
             'end': end_date,
-            'lmt': '100000',  # 增加限制数量以获取更多历史数据（原50000，部分老股票数据量较大）
+            'lmt': '150000',  # 增加限制数量以获取更多历史数据（原100000，确保覆盖所有老股票）
             'ut': 'fa5fd1943c7b386f172d6893dbfba10b',
             'cb': f'jQuery{random.randint(1000000, 9999999)}_{int(time.time() * 1000)}'
         }
@@ -95,7 +95,4 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
 
                 if not klines:
                     print("⚠️ K线数据为空")
-                    return None
-
-                # 解析数据
-            
+                 
