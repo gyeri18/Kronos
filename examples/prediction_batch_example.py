@@ -54,10 +54,14 @@ df['timestamps'] = pd.to_datetime(df['timestamps'])
 lookback = 400
 pred_len = 120
 
+# Using 10 samples instead of 5 to get a broader view of model performance
+# across different market regimes in the dataset
+num_samples = 10
+
 dfs = []
 xtsp = []
 ytsp = []
-for i in range(5):
+for i in range(num_samples):
     idf = df.loc[(i*400):(i*400+lookback-1), ['open', 'high', 'low', 'close', 'volume', 'amount']]
     i_x_timestamp = df.loc[(i*400):(i*400+lookback-1), 'timestamps']
     i_y_timestamp = df.loc[(i*400+lookback):(i*400+lookback+pred_len-1), 'timestamps']
