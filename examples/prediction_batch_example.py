@@ -58,12 +58,16 @@ pred_len = 120
 # across different market regimes in the dataset
 num_samples = 10
 
+# Step size controls overlap between windows; set equal to lookback for non-overlapping,
+# or smaller (e.g. lookback // 2) for overlapping windows to increase sample diversity
+step = lookback
+
 dfs = []
 xtsp = []
 ytsp = []
 for i in range(num_samples):
     # Use non-overlapping windows by stepping by lookback size each iteration
-    start = i * lookback
+    start = i * step
     idf = df.loc[start:(start + lookback - 1), ['open', 'high', 'low', 'close', 'volume', 'amount']]
     i_x_timestamp = df.loc[start:(start + lookback - 1), 'timestamps']
     i_y_timestamp = df.loc[(start + lookback):(start + lookback + pred_len - 1), 'timestamps']
