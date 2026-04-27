@@ -66,4 +66,4 @@
     <img src="figures/overview.png" alt="" align="center" width="700px" />
 </p>
 
-> **Personal note:** I'm using this fork primarily to experiment with fine-tuning Kronos on crypto market data (BTC/ETH daily candles). My main interest is evaluating whether the hierarchical tokenizer generalizes well to assets not heavily represented in the original training set. Notes and results will be added to the `experiments/` directory as I go.
+> **Personal note:** I'm using this fork primarily to experiment with fine-tuning Kronos on crypto market data (BTC/ETH daily candles). My main areas of interest are the tokenizer stage and how it handles the higher volatility compared to traditional equity markets.
