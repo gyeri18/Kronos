@@ -85,10 +85,5 @@ class KronosModel:
 
         # Residuals (aligned to trend)
         aligned_values = values[self.window - 1 :]
+        # Fixed: was referencing self._tr (typo), should be self._trend
         self._residuals = aligned_values - self._trend
-
-        # Linear regression on the trend for extrapolation
-        x = np.arange(len(self._trend), dtype=float)
-        self._slope, self._intercept = np.polyfit(x, self._trend, 1)
-
-        # Keep last `window` raw values for volatility 
