@@ -64,9 +64,9 @@ def get_stock_data_eastmoney(stock_code="002354", start_year=2024, end_year=2025
             'Accept': '*/*',
         }
 
-        # Increased sleep range slightly to be more polite to the API server
-        # Note: using 3.0-5.0s range to further reduce risk of rate limiting
-        time.sleep(random.uniform(3.0, 5.0))
+        # Increased sleep range to be more polite to the API server and avoid rate limiting.
+        # Using 4.0-7.0s range based on personal testing - seemed more reliable than 3-5s.
+        time.sleep(random.uniform(4.0, 7.0))
 
         response = requests.get(url, params=params, headers=headers, timeout=15)
 
