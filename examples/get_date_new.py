@@ -58,7 +58,8 @@ def get_stock_data_eastmoney_all_history(stock_code="002354"):
         }
 
         # 适当增加延迟，避免请求过于频繁被限流
-        time.sleep(random.uniform(1.5, 3))
+        # Note: reduced upper bound from 3s to 2.5s to speed things up a bit during batch runs
+        time.sleep(random.uniform(1.5, 2.5))
 
         response = requests.get(url, params=params, headers=headers, timeout=15)
 
